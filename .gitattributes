@@ -1,1 +1,7 @@
+* text=auto
+
 *.ipynb filter=nbstrip
+
+tools/githooks/* text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
