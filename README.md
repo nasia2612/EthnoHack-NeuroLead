@@ -40,4 +40,10 @@ Python 3 with the packages in `requirements.txt`:
 
 ```
 pip install -r requirements.txt
+python tools/setup-git-filters.py
 ```
+
+The second command configures a clean filter that strips notebook outputs when
+files are staged, together with a pre-commit hook that rejects any notebook
+staged with its outputs. Git does not activate a repository's own filters or
+hooks on clone, so it has to be run once per clone.

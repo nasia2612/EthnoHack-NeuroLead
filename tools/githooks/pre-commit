@@ -1,0 +1,26 @@
+#!/bin/sh
+# Reject staged notebooks that still carry cell outputs. Outputs can embed
+# local file paths, so they are kept out of the repository.
+
+staged=$(git diff --cached --name-only --diff-filter=ACM | grep '\.ipynb$')
+[ -n "$staged" ] || exit 0
+
+status=0
+old_ifs=$IFS
+IFS='
+'
+for file in $staged; do
+	if git show ":$file" | grep -q '"output_type"'; then
+		echo "pre-commit: $file is staged with cell outputs." >&2
+		status=1
+	fi
+done
+IFS=$old_ifs
+
+if [ "$status" -ne 0 ]; then
+	echo "" >&2
+	echo "The nbstrip filter is not active in this clone." >&2
+	echo "Run 'python tools/setup-git-filters.py', then stage the files again." >&2
+fi
+
+exit "$status"
